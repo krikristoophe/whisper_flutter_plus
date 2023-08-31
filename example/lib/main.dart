@@ -2,7 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:test_whisper/providers.dart';
+import 'package:test_whisper/whisper_controller.dart';
+import 'package:test_whisper/whisper_result.dart';
 import 'package:whisper_flutter_plus/whisper_flutter_plus.dart';
 
 void main() {
@@ -14,91 +18,117 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ProviderScope(
+      child: MaterialApp(
+        title: 'Flutter whisper demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({required this.title, super.key});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  String? _text;
-  Future<void> _transcribe() async {
-    final Directory documentDirectory =
-        await getApplicationDocumentsDirectory();
-    final ByteData documentBytes = await rootBundle.load('assets/jfk.wav');
-
-    await File('${documentDirectory.path}/jfk.wav').writeAsBytes(
-      documentBytes.buffer.asUint8List(),
-    );
-
-    const Whisper whisper = Whisper(
-      model: WhisperModel.base,
-    );
-    final String? whisperVersion = await whisper.getVersion();
-    print(whisperVersion);
-
-    final DateTime start = DateTime.now();
-    final String transcription = await whisper.transcribe(
-      transcribeRequest: TranscribeRequest(
-        audio: '${documentDirectory.path}/jfk.wav',
-      ),
-    );
-    print(transcription);
-
-    print(DateTime.now().difference(start));
-
-    setState(() {
-      _text = transcription;
-    });
-
-    /// auto convert any fideo
-    /* Transcribe transcribeAnyAudio = await whisper.transcribe(
-      audio: WhisperAudioconvert.convert(
-        audioInput: File('./path_audio_any_format'),
-        audioOutput: File('./path_audio_convert.wav'),
-      ).path,
-      model: './path_model_whisper_bin',
-      language: 'id', // language
-    );
-    print(transcribeAnyAudio); */
-  }
+class MyHomePage extends ConsumerWidget {
+  const MyHomePage({
+    super.key,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final WhisperModel model = ref.watch(modelProvider);
+    final WhisperController controller = ref.watch(
+      whisperControllerProvider.notifier,
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (_text != null)
-              Text(
-                _text!,
-              ),
-          ],
+        title: const Text(
+          'Whisper flutter demo',
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _transcribe,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: SafeArea(
+        minimum: const EdgeInsets.all(20),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final AsyncValue<TranscribeResult?> transcriptionAsync = ref.watch(
+              whisperControllerProvider,
+            );
+
+            return transcriptionAsync.maybeWhen(
+              skipLoadingOnRefresh: true,
+              skipLoadingOnReload: true,
+              data: (TranscribeResult? transcriptionResult) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    const Text('Model :'),
+                    DropdownButton(
+                      isExpanded: true,
+                      value: model,
+                      items: WhisperModel.values
+                          .map(
+                            (WhisperModel model) => DropdownMenuItem(
+                              value: model,
+                              child: Text(model.modelName),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (WhisperModel? model) {
+                        if (model != null) {
+                          ref.read(modelProvider.notifier).state = model;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            final Directory documentDirectory =
+                                await getApplicationDocumentsDirectory();
+                            final ByteData documentBytes =
+                                await rootBundle.load(
+                              'assets/jfk.wav',
+                            );
+
+                            final String jfkPath =
+                                '${documentDirectory.path}/jfk.wav';
+
+                            await File(jfkPath).writeAsBytes(
+                              documentBytes.buffer.asUint8List(),
+                            );
+
+                            await controller.transcribe(jfkPath);
+                          },
+                          child: const Text('jfk.wav'),
+                        ),
+                      ],
+                    ),
+                    if (transcriptionResult != null) ...[
+                      const SizedBox(height: 20),
+                      Text(
+                        transcriptionResult.transcription,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        transcriptionResult.time.toString(),
+                      ),
+                    ],
+                  ],
+                );
+              },
+              orElse: () {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
