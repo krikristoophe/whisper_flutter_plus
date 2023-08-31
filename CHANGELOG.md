@@ -4,7 +4,7 @@
 * Download models from huggingface
 * Transcribe wav files to text
 
-## 0.0.1+2
+## 0.0.2
 
 * Add public documentation
 * Fix analyzer errors
