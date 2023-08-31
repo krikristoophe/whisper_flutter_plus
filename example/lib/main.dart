@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:test_whisper/providers.dart';
+import 'package:test_whisper/record_page.dart';
 import 'package:test_whisper/whisper_controller.dart';
 import 'package:test_whisper/whisper_result.dart';
 import 'package:whisper_flutter_plus/whisper_flutter_plus.dart';
@@ -39,6 +40,7 @@ class MyHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final WhisperModel model = ref.watch(modelProvider);
+    final String lang = ref.watch(langProvider);
     final WhisperController controller = ref.watch(
       whisperControllerProvider.notifier,
     );
@@ -83,6 +85,24 @@ class MyHomePage extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: 20),
+                    DropdownButton(
+                      isExpanded: true,
+                      value: lang,
+                      items: ['id', 'fr', 'en']
+                          .map(
+                            (String lang) => DropdownMenuItem(
+                              value: lang,
+                              child: Text(lang),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (String? lang) {
+                        if (lang != null) {
+                          ref.read(langProvider.notifier).state = lang;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -105,6 +125,20 @@ class MyHomePage extends ConsumerWidget {
                             await controller.transcribe(jfkPath);
                           },
                           child: const Text('jfk.wav'),
+                        ),
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final String? recordFilePath =
+                                await RecordPage.openRecordPage(
+                              context,
+                            );
+
+                            if (recordFilePath != null) {
+                              await controller.transcribe(recordFilePath);
+                            }
+                          },
+                          child: const Text('record'),
                         ),
                       ],
                     ),

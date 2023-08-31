@@ -21,20 +21,29 @@ class WhisperController extends StateNotifier<AsyncValue<TranscribeResult?>> {
     print(whisperVersion);
 
     final DateTime start = DateTime.now();
-    final String transcription = await whisper.transcribe(
-      transcribeRequest: TranscribeRequest(
-        audio: filePath,
-      ),
-    );
 
-    final Duration transcriptionDuration = DateTime.now().difference(start);
+    final String lang = ref.read(langProvider);
 
-    state = AsyncData(
-      TranscribeResult(
-        time: transcriptionDuration,
-        transcription: transcription,
-      ),
-    );
+    try {
+      final String transcription = await whisper.transcribe(
+        transcribeRequest: TranscribeRequest(
+          audio: filePath,
+          language: lang,
+        ),
+      );
+
+      final Duration transcriptionDuration = DateTime.now().difference(start);
+
+      state = AsyncData(
+        TranscribeResult(
+          time: transcriptionDuration,
+          transcription: transcription,
+        ),
+      );
+    } catch (e) {
+      print(e);
+      state = const AsyncData(null);
+    }
   }
 }
 

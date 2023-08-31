@@ -25,6 +25,7 @@ linter:
     public_member_api_docs: false
     omit_local_variable_types: false
     unnecessary_lambdas: false
+    use_build_context_synchronously: false
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
