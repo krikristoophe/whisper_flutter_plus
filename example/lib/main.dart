@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
       documentBytes.buffer.asUint8List(),
     );
 
-    final Whisper whisper = Whisper(
+    const Whisper whisper = Whisper(
       model: WhisperModel.base,
     );
     final String? whisperVersion = await whisper.getVersion();

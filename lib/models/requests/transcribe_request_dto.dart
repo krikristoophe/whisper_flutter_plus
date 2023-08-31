@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'dart:convert';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -7,10 +9,12 @@ import 'package:whisper_flutter_plus/models/whisper_dto.dart';
 part 'transcribe_request_dto.freezed.dart';
 part 'transcribe_request_dto.g.dart';
 
+/// Transcribe request sent to whisper.cpp
 @freezed
 class TranscribeRequestDto
     with _$TranscribeRequestDto
     implements WhisperRequestDto {
+  ///
   const factory TranscribeRequestDto({
     required String audio,
     required String model,
@@ -27,6 +31,7 @@ class TranscribeRequestDto
     @JsonKey(name: 'speed_up') required bool speedUp,
   }) = _TranscribeRequestDto;
 
+  /// Convert [request] to TranscribeRequestDto with specified [modelPath]
   factory TranscribeRequestDto.fromTranscribeRequest(
     TranscribeRequest request,
     String modelPath,
@@ -49,6 +54,7 @@ class TranscribeRequestDto
   }
   const TranscribeRequestDto._();
 
+  /// Create request json
   factory TranscribeRequestDto.fromJson(Map<String, dynamic> json) =>
       _$TranscribeRequestDtoFromJson(json);
 

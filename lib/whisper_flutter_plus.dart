@@ -17,8 +17,10 @@ export 'download_model.dart' show WhisperModel;
 export 'models/_models.dart';
 export 'whisper_audio_convert.dart';
 
+/// Native request type
 typedef WReqNative = Pointer<Utf8> Function(Pointer<Utf8> body);
 
+/// Logger use for whole package
 final DartLogger logger = DartLogger(
   configuration: const DartLoggerConfiguration(
     format: LogFormat.inline,
@@ -26,13 +28,20 @@ final DartLogger logger = DartLogger(
   ),
 );
 
+/// Entry point of whisper_flutter_plus
 class Whisper {
-  Whisper({
+  /// [model] is required
+  /// [modelDir] is path where downloaded model will be stored.
+  /// Default to library directory
+  const Whisper({
     required this.model,
     this.modelDir,
   });
 
+  /// model used for transcription
   final WhisperModel model;
+
+  /// override of model storage path
   final String? modelDir;
 
   DynamicLibrary _openLib() {
@@ -93,6 +102,7 @@ class Whisper {
     return WhisperResponse.fromJson(result);
   }
 
+  /// Transcribe audio file to text
   Future<String> transcribe({
     required TranscribeRequest transcribeRequest,
   }) async {
@@ -109,6 +119,7 @@ class Whisper {
     return result.text!;
   }
 
+  /// Get whisper version
   Future<String?> getVersion() async {
     final WhisperResponse result = await _request(
       whisperRequest: const VersionRequest(),

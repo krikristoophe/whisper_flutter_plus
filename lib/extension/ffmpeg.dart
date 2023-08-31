@@ -2,7 +2,9 @@ import 'package:easy_dart_logger/easy_dart_logger.dart';
 import 'package:ffmpeg_dart/ffmpeg_dart.dart';
 import 'package:universal_io/io.dart';
 
+/// Whisper specific extension to FFmpeg
 extension ConvertAudioToWavWhisper on FFmpeg {
+  /// Start conversion of any audio file to wav
   bool convertAudioToWavWhisper({
     required String pathAudioInput,
     required String pathAudioOutput,

@@ -5,8 +5,10 @@ import 'package:whisper_flutter_plus/models/whisper_dto.dart';
 
 part 'version_request.freezed.dart';
 
+/// Get whisper version request
 @freezed
 class VersionRequest with _$VersionRequest implements WhisperRequestDto {
+  ///
   const factory VersionRequest() = _VersionRequest;
   const VersionRequest._();
 

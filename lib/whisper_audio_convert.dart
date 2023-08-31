@@ -4,8 +4,13 @@ import 'package:ffmpeg_dart/ffmpeg_dart.dart';
 import 'package:universal_io/io.dart';
 import 'package:whisper_flutter_plus/extension/ffmpeg.dart';
 
+/// Class used to convert any audio file to wav
 class WhisperAudioconvert {
-  WhisperAudioconvert();
+  ///
+  const WhisperAudioconvert();
+
+  /// convert [audioInput] to wav file
+  /// Wait the end of conversion
   static File convert({
     required File audioInput,
     required File audioOutput,

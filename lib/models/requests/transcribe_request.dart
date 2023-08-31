@@ -2,8 +2,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'transcribe_request.freezed.dart';
 
+/// Transcription request parameters
 @freezed
 class TranscribeRequest with _$TranscribeRequest {
+  ///
   const factory TranscribeRequest({
     required String audio,
     @Default(false) bool isTranslate,
