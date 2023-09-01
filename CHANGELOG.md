@@ -8,3 +8,8 @@
 
 * Add public documentation
 * Fix analyzer errors
+
+## 0.0.3
+
+* Improve exemple app
+* Add audio to wav converter

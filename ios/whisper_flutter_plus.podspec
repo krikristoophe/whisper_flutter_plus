@@ -27,12 +27,12 @@ A new Flutter FFI plugin project.
   }
   s.source_files = 'Classes/**/*.{cpp,c}'
   #s.private_header_files = 'Classes/**/*.{h,hpp}'
-  s.platform = :ios, '11.0'
-  s.ios.deployment_target  = '11.0'
+  s.platform = :ios, '12.1'
+  s.ios.deployment_target  = '12.1'
 
   # Flutter.framework does not contain a i386 slice.
   s.xcconfig = {
-    'IPHONEOS_DEPLOYMENT_TARGET' => '11.0'
+    'IPHONEOS_DEPLOYMENT_TARGET' => '12.1'
   }
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',

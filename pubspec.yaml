@@ -1,6 +1,6 @@
 name: whisper_flutter_plus
 description: Ready to use whisper.cpp models implementation for iOS and Android
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/krikristoophe/whisper_flutter_plus.git
 repository: https://github.com/krikristoophe/whisper_flutter_plus.git
 
@@ -12,6 +12,7 @@ dependencies:
   easy_dart_logger: ^1.0.1+1
   ffi: ^2.0.1
   ffmpeg_dart: ^0.0.0
+  ffmpeg_kit_flutter_full_gpl: ^6.0.0
   flutter:
     sdk: flutter
   freezed_annotation: ^2.4.1

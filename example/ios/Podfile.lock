@@ -1,4 +1,11 @@
 PODS:
+  - ffmpeg-kit-ios-full-gpl (6.0)
+  - ffmpeg_kit_flutter_full_gpl (6.0.0):
+    - ffmpeg_kit_flutter_full_gpl/full-gpl (= 6.0.0)
+    - Flutter
+  - ffmpeg_kit_flutter_full_gpl/full-gpl (6.0.0):
+    - ffmpeg-kit-ios-full-gpl (= 6.0)
+    - Flutter
   - Flutter (1.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -9,12 +16,19 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - ffmpeg_kit_flutter_full_gpl (from `.symlinks/plugins/ffmpeg_kit_flutter_full_gpl/ios`)
   - Flutter (from `Flutter`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - record (from `.symlinks/plugins/record/ios`)
   - whisper_flutter_plus (from `.symlinks/plugins/whisper_flutter_plus/ios`)
 
+SPEC REPOS:
+  trunk:
+    - ffmpeg-kit-ios-full-gpl
+
 EXTERNAL SOURCES:
+  ffmpeg_kit_flutter_full_gpl:
+    :path: ".symlinks/plugins/ffmpeg_kit_flutter_full_gpl/ios"
   Flutter:
     :path: Flutter
   path_provider_foundation:
@@ -25,11 +39,13 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/whisper_flutter_plus/ios"
 
 SPEC CHECKSUMS:
+  ffmpeg-kit-ios-full-gpl: 80adc341962e55ef709e36baa8ed9a70cf4ea62b
+  ffmpeg_kit_flutter_full_gpl: 6acc06d840d8e5505cf7cf01e2d64b7395d18f01
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   record: cae05d8dd3cdb1dea3511b20e5a5811a1ae00d0d
-  whisper_flutter_plus: e5a2385dee56078aec537f056cdebd5181c88f48
+  whisper_flutter_plus: d23b5d67cd20df326657865fe5b2bcafa6c00ffa
 
-PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
+PODFILE CHECKSUM: f9420bd595da8fbce156b547dcd3368afc5226ff
 
 COCOAPODS: 1.11.3

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
 class RecordController extends StateNotifier<bool> {
@@ -12,9 +15,11 @@ class RecordController extends StateNotifier<bool> {
       return;
     }
     state = true;
+    final Directory appDirectory = await getApplicationDocumentsDirectory();
     await _record.start(
-      encoder: AudioEncoder.wav,
+      encoder: AudioEncoder.pcm16bit,
       samplingRate: 16000,
+      path: '${appDirectory.path}/test.m4a',
     );
   }
 
@@ -58,7 +63,15 @@ class RecordPage extends ConsumerWidget {
                   onPressed: () async {
                     final String? outputPath = await controller.stopRecord();
 
-                    Navigator.of(context).pop(outputPath);
+                    if (outputPath != null) {
+                      final File outputFile = File(outputPath);
+
+                      print(outputFile.path);
+
+                      Navigator.of(context).pop(outputFile.path);
+                    } else {
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: const Text('stop'),
                 )

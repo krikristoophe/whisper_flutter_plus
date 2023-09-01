@@ -12,6 +12,7 @@ import 'package:whisper_flutter_plus/models/requests/transcribe_request_dto.dart
 import 'package:whisper_flutter_plus/models/requests/version_request.dart';
 import 'package:whisper_flutter_plus/models/whisper_dto.dart';
 import 'package:whisper_flutter_plus/models/whisper_response.dart';
+import 'package:whisper_flutter_plus/whisper_audio_convert.dart';
 
 export 'download_model.dart' show WhisperModel;
 export 'models/_models.dart';
@@ -106,10 +107,20 @@ class Whisper {
   Future<String> transcribe({
     required TranscribeRequest transcribeRequest,
   }) async {
+    final WhisperAudioconvert converter = WhisperAudioconvert(
+      audioInput: File(transcribeRequest.audio),
+      audioOutput: File('${transcribeRequest.audio}.wav'),
+    );
+
+    final File? convertedFile = await converter.convert();
+
+    final TranscribeRequest req = transcribeRequest.copyWith(
+      audio: convertedFile?.path ?? transcribeRequest.audio,
+    );
     final String modelDir = await _getModelDir();
     final WhisperResponse result = await _request(
       whisperRequest: TranscribeRequestDto.fromTranscribeRequest(
-        transcribeRequest,
+        req,
         model.getPath(modelDir),
       ),
     );
