@@ -280,6 +280,9 @@ json transcribe(json jsonBody)
         {
 
             const int n_segments = whisper_full_n_segments(ctx);
+
+            std::vector<json> segmentsJson = {};
+
             for (int i = 0; i < n_segments; ++i)
             {
                 const char *text = whisper_full_get_segment_text(ctx, i);
@@ -290,20 +293,28 @@ json transcribe(json jsonBody)
                 {
                     // printf("%s", text);
                     // fflush(stdout);
-                }
-                else
-                {
-                    // const int64_t t0 = whisper_full_get_segment_t0(ctx, i);
-                    // const int64_t t1 = whisper_full_get_segment_t1(ctx, i);
+                } else {
+                    json jsonSegment;
+                    const int64_t t0 = whisper_full_get_segment_t0(ctx, i);
+                    const int64_t t1 = whisper_full_get_segment_t1(ctx, i);
 
                     // printf("[%s --> %s]  %s\n", to_timestamp(t0).c_str(), to_timestamp(t1).c_str(), text);
+
+                    jsonSegment["from_ts"] = t0;
+                    jsonSegment["to_ts"] = t1;
+                    jsonSegment["text"] = text;
+
+                    segmentsJson.push_back(jsonSegment);
                 }
+            }
+
+            if (!params.no_timestamps) {
+                jsonResult["segments"] = segmentsJson;
             }
         }
     }
-    // }
     jsonResult["text"] = text_result;
-    // whisper_print_timings(ctx);
+    
     whisper_free(ctx);
     return jsonResult;
 }
