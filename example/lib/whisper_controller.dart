@@ -28,6 +28,8 @@ class WhisperController extends StateNotifier<AsyncValue<TranscribeResult?>> {
 
     final bool withSegments = ref.read(withSegmentsProvider);
 
+    final bool splitWords = ref.read(splitWordsProvider);
+
     try {
       final WhisperTranscribeResponse transcription = await whisper.transcribe(
         transcribeRequest: TranscribeRequest(
@@ -35,6 +37,7 @@ class WhisperController extends StateNotifier<AsyncValue<TranscribeResult?>> {
           language: lang,
           isTranslate: translate,
           isNoTimestamps: !withSegments,
+          splitOnWord: splitWords,
         ),
       );
 

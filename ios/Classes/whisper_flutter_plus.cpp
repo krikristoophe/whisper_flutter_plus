@@ -129,6 +129,7 @@ struct whisper_params
     bool print_colors = false;
     bool print_progress = false;
     bool no_timestamps = false;
+    bool split_on_word = false;
 
     std::string language = "id";
     std::string prompt;
@@ -157,6 +158,7 @@ json transcribe(json jsonBody)
     params.no_timestamps = jsonBody["is_no_timestamps"];
     params.model = jsonBody["model"];
     params.audio = jsonBody["audio"];
+    params.split_on_word = jsonBody["split_on_word"];
     json jsonResult;
     jsonResult["@type"] = "transcribe";
 
@@ -267,6 +269,12 @@ json transcribe(json jsonBody)
         wparams.translate = params.translate;
         wparams.language = params.language.c_str();
         wparams.n_threads = params.n_threads;
+        wparams.split_on_word = params.split_on_word;
+
+        if (params.split_on_word) {
+            wparams.max_len = 1;
+            wparams.token_timestamps = true;
+        }
 
         if (whisper_full(ctx, wparams, pcmf32.data(), pcmf32.size()) != 0)
         {
@@ -274,6 +282,8 @@ json transcribe(json jsonBody)
             jsonResult["message"] = "failed to process audio";
             return jsonResult;
         }
+
+        
 
         // print result;
         if (!wparams.print_realtime)

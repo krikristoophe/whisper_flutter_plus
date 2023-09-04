@@ -8,3 +8,5 @@ final langProvider = StateProvider.autoDispose((ref) => 'id');
 final translateProvider = StateProvider((ref) => false);
 
 final withSegmentsProvider = StateProvider((ref) => false);
+
+final splitWordsProvider = StateProvider((ref) => false);

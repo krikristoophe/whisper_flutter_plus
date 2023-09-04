@@ -13,3 +13,8 @@
 
 * Improve exemple app
 * Add audio to wav converter
+
+## 1.0.0
+
+* Add possibility to get segments result
+* Add split_on_word parameter

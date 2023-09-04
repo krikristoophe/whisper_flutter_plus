@@ -41,6 +41,8 @@ final String transcription = await whisper.transcribe(
     transcribeRequest: TranscribeRequest(
         audio: jfkPath,
         isTranslate: true, // Translate result from audio lang to english text
+        isNoTimestamps: false, // Get segments in result
+        splitOnWord: true, // Split segments on each word 
     ),
 );
 print(transcription);

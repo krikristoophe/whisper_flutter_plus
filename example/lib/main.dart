@@ -43,6 +43,8 @@ class MyHomePage extends ConsumerWidget {
     final String lang = ref.watch(langProvider);
     final bool translate = ref.watch(translateProvider);
     final bool withSegments = ref.watch(withSegmentsProvider);
+    final bool splitWords = ref.watch(splitWordsProvider);
+
     final WhisperController controller = ref.watch(
       whisperControllerProvider.notifier,
     );
@@ -145,6 +147,27 @@ class MyHomePage extends ConsumerWidget {
                         if (withSegments != null) {
                           ref.read(withSegmentsProvider.notifier).state =
                               withSegments;
+                        }
+                      },
+                    ),
+                    const Text('Split word :'),
+                    DropdownButton(
+                      isExpanded: true,
+                      value: splitWords,
+                      items: const [
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
+                        ),
+                      ],
+                      onChanged: (bool? splitWords) {
+                        if (splitWords != null) {
+                          ref.read(splitWordsProvider.notifier).state =
+                              splitWords;
                         }
                       },
                     ),
