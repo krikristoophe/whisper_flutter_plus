@@ -24,11 +24,14 @@ class WhisperController extends StateNotifier<AsyncValue<TranscribeResult?>> {
 
     final String lang = ref.read(langProvider);
 
+    final bool translate = ref.read(translateProvider);
+
     try {
       final String transcription = await whisper.transcribe(
         transcribeRequest: TranscribeRequest(
           audio: filePath,
           language: lang,
+          isTranslate: translate,
         ),
       );
 

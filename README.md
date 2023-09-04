@@ -40,6 +40,7 @@ print(whisperVersion);
 final String transcription = await whisper.transcribe(
     transcribeRequest: TranscribeRequest(
         audio: jfkPath,
+        isTranslate: true, // Translate result from audio lang to english text
     ),
 );
 print(transcription);
