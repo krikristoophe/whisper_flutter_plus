@@ -42,6 +42,9 @@ class MyHomePage extends ConsumerWidget {
     final WhisperModel model = ref.watch(modelProvider);
     final String lang = ref.watch(langProvider);
     final bool translate = ref.watch(translateProvider);
+    final bool withSegments = ref.watch(withSegmentsProvider);
+    final bool splitWords = ref.watch(splitWordsProvider);
+
     final WhisperController controller = ref.watch(
       whisperControllerProvider.notifier,
     );
@@ -126,6 +129,48 @@ class MyHomePage extends ConsumerWidget {
                         }
                       },
                     ),
+                    const Text('With segments :'),
+                    DropdownButton(
+                      isExpanded: true,
+                      value: withSegments,
+                      items: const [
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
+                        ),
+                      ],
+                      onChanged: (bool? withSegments) {
+                        if (withSegments != null) {
+                          ref.read(withSegmentsProvider.notifier).state =
+                              withSegments;
+                        }
+                      },
+                    ),
+                    const Text('Split word :'),
+                    DropdownButton(
+                      isExpanded: true,
+                      value: splitWords,
+                      items: const [
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
+                        ),
+                      ],
+                      onChanged: (bool? splitWords) {
+                        if (splitWords != null) {
+                          ref.read(splitWordsProvider.notifier).state =
+                              splitWords;
+                        }
+                      },
+                    ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -169,12 +214,37 @@ class MyHomePage extends ConsumerWidget {
                     if (transcriptionResult != null) ...[
                       const SizedBox(height: 20),
                       Text(
-                        transcriptionResult.transcription,
+                        transcriptionResult.transcription.text,
                       ),
                       const SizedBox(height: 20),
                       Text(
                         transcriptionResult.time.toString(),
                       ),
+                      if (transcriptionResult.transcription.segments !=
+                          null) ...[
+                        const SizedBox(height: 20),
+                        Expanded(
+                          child: ListView.separated(
+                            itemCount: transcriptionResult
+                                .transcription.segments!.length,
+                            itemBuilder: (context, index) {
+                              final WhisperTranscribeSegment segment =
+                                  transcriptionResult
+                                      .transcription.segments![index];
+
+                              final Duration fromTs = segment.fromTs;
+                              final Duration toTs = segment.toTs;
+                              final String text = segment.text;
+                              return Text(
+                                '[$fromTs - $toTs] $text',
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const Divider();
+                            },
+                          ),
+                        ),
+                      ],
                     ],
                   ],
                 );

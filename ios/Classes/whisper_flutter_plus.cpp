@@ -129,6 +129,7 @@ struct whisper_params
     bool print_colors = false;
     bool print_progress = false;
     bool no_timestamps = false;
+    bool split_on_word = false;
 
     std::string language = "id";
     std::string prompt;
@@ -157,6 +158,7 @@ json transcribe(json jsonBody)
     params.no_timestamps = jsonBody["is_no_timestamps"];
     params.model = jsonBody["model"];
     params.audio = jsonBody["audio"];
+    params.split_on_word = jsonBody["split_on_word"];
     json jsonResult;
     jsonResult["@type"] = "transcribe";
 
@@ -267,6 +269,12 @@ json transcribe(json jsonBody)
         wparams.translate = params.translate;
         wparams.language = params.language.c_str();
         wparams.n_threads = params.n_threads;
+        wparams.split_on_word = params.split_on_word;
+
+        if (params.split_on_word) {
+            wparams.max_len = 1;
+            wparams.token_timestamps = true;
+        }
 
         if (whisper_full(ctx, wparams, pcmf32.data(), pcmf32.size()) != 0)
         {
@@ -275,11 +283,16 @@ json transcribe(json jsonBody)
             return jsonResult;
         }
 
+        
+
         // print result;
         if (!wparams.print_realtime)
         {
 
             const int n_segments = whisper_full_n_segments(ctx);
+
+            std::vector<json> segmentsJson = {};
+
             for (int i = 0; i < n_segments; ++i)
             {
                 const char *text = whisper_full_get_segment_text(ctx, i);
@@ -290,20 +303,28 @@ json transcribe(json jsonBody)
                 {
                     // printf("%s", text);
                     // fflush(stdout);
-                }
-                else
-                {
-                    // const int64_t t0 = whisper_full_get_segment_t0(ctx, i);
-                    // const int64_t t1 = whisper_full_get_segment_t1(ctx, i);
+                } else {
+                    json jsonSegment;
+                    const int64_t t0 = whisper_full_get_segment_t0(ctx, i);
+                    const int64_t t1 = whisper_full_get_segment_t1(ctx, i);
 
                     // printf("[%s --> %s]  %s\n", to_timestamp(t0).c_str(), to_timestamp(t1).c_str(), text);
+
+                    jsonSegment["from_ts"] = t0;
+                    jsonSegment["to_ts"] = t1;
+                    jsonSegment["text"] = text;
+
+                    segmentsJson.push_back(jsonSegment);
                 }
+            }
+
+            if (!params.no_timestamps) {
+                jsonResult["segments"] = segmentsJson;
             }
         }
     }
-    // }
     jsonResult["text"] = text_result;
-    // whisper_print_timings(ctx);
+    
     whisper_free(ctx);
     return jsonResult;
 }

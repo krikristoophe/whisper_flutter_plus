@@ -1,6 +1,6 @@
 name: whisper_flutter_plus
 description: Ready to use whisper.cpp models implementation for iOS and Android
-version: 0.0.3
+version: 1.0.0
 homepage: https://github.com/krikristoophe/whisper_flutter_plus.git
 repository: https://github.com/krikristoophe/whisper_flutter_plus.git
 

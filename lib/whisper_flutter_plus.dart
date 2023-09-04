@@ -10,8 +10,9 @@ import 'package:whisper_flutter_plus/download_model.dart';
 import 'package:whisper_flutter_plus/models/requests/transcribe_request.dart';
 import 'package:whisper_flutter_plus/models/requests/transcribe_request_dto.dart';
 import 'package:whisper_flutter_plus/models/requests/version_request.dart';
+import 'package:whisper_flutter_plus/models/responses/whisper_transcribe_response.dart';
+import 'package:whisper_flutter_plus/models/responses/whisper_version_response.dart';
 import 'package:whisper_flutter_plus/models/whisper_dto.dart';
-import 'package:whisper_flutter_plus/models/whisper_response.dart';
 import 'package:whisper_flutter_plus/whisper_audio_convert.dart';
 
 export 'download_model.dart' show WhisperModel;
@@ -78,11 +79,11 @@ class Whisper {
     );
   }
 
-  Future<WhisperResponse> _request({
+  Future<Map<String, dynamic>> _request({
     required WhisperRequestDto whisperRequest,
   }) async {
     await _initModel();
-    final Map<String, dynamic> result = await Isolate.run(
+    return Isolate.run(
       () async {
         final Pointer<Utf8> data =
             whisperRequest.toRequestString().toNativeUtf8();
@@ -100,11 +101,10 @@ class Whisper {
         return result;
       },
     );
-    return WhisperResponse.fromJson(result);
   }
 
   /// Transcribe audio file to text
-  Future<String> transcribe({
+  Future<WhisperTranscribeResponse> transcribe({
     required TranscribeRequest transcribeRequest,
   }) async {
     final WhisperAudioconvert converter = WhisperAudioconvert(
@@ -118,23 +118,27 @@ class Whisper {
       audio: convertedFile?.path ?? transcribeRequest.audio,
     );
     final String modelDir = await _getModelDir();
-    final WhisperResponse result = await _request(
+    final Map<String, dynamic> result = await _request(
       whisperRequest: TranscribeRequestDto.fromTranscribeRequest(
         req,
         model.getPath(modelDir),
       ),
     );
-    if (result.text == null) {
-      throw Exception(result.message);
+    if (result['text'] == null) {
+      throw Exception(result['message']);
     }
-    return result.text!;
+    return WhisperTranscribeResponse.fromJson(result);
   }
 
   /// Get whisper version
   Future<String?> getVersion() async {
-    final WhisperResponse result = await _request(
+    final Map<String, dynamic> result = await _request(
       whisperRequest: const VersionRequest(),
     );
-    return result.message;
+
+    final WhisperVersionResponse response = WhisperVersionResponse.fromJson(
+      result,
+    );
+    return response.message;
   }
 }

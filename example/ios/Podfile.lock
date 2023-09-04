@@ -1,9 +1,9 @@
 PODS:
   - ffmpeg-kit-ios-full-gpl (6.0)
-  - ffmpeg_kit_flutter_full_gpl (6.0.0):
-    - ffmpeg_kit_flutter_full_gpl/full-gpl (= 6.0.0)
+  - ffmpeg_kit_flutter_full_gpl (6.0.2):
+    - ffmpeg_kit_flutter_full_gpl/full-gpl (= 6.0.2)
     - Flutter
-  - ffmpeg_kit_flutter_full_gpl/full-gpl (6.0.0):
+  - ffmpeg_kit_flutter_full_gpl/full-gpl (6.0.2):
     - ffmpeg-kit-ios-full-gpl (= 6.0)
     - Flutter
   - Flutter (1.0.0)
@@ -40,7 +40,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ffmpeg-kit-ios-full-gpl: 80adc341962e55ef709e36baa8ed9a70cf4ea62b
-  ffmpeg_kit_flutter_full_gpl: 6acc06d840d8e5505cf7cf01e2d64b7395d18f01
+  ffmpeg_kit_flutter_full_gpl: 350bef923e294aa2559f1d6dcb3b76cfd51a76a3
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   record: cae05d8dd3cdb1dea3511b20e5a5811a1ae00d0d
