@@ -41,6 +41,7 @@ class MyHomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final WhisperModel model = ref.watch(modelProvider);
     final String lang = ref.watch(langProvider);
+    final bool translate = ref.watch(translateProvider);
     final WhisperController controller = ref.watch(
       whisperControllerProvider.notifier,
     );
@@ -85,6 +86,7 @@ class MyHomePage extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: 20),
+                    const Text('Lang :'),
                     DropdownButton(
                       isExpanded: true,
                       value: lang,
@@ -99,6 +101,28 @@ class MyHomePage extends ConsumerWidget {
                       onChanged: (String? lang) {
                         if (lang != null) {
                           ref.read(langProvider.notifier).state = lang;
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Translate result :'),
+                    DropdownButton(
+                      isExpanded: true,
+                      value: translate,
+                      items: const [
+                        DropdownMenuItem(
+                          value: false,
+                          child: Text('No'),
+                        ),
+                        DropdownMenuItem(
+                          value: true,
+                          child: Text('Yes'),
+                        ),
+                      ],
+                      onChanged: (bool? translate) {
+                        if (translate != null) {
+                          ref.read(translateProvider.notifier).state =
+                              translate;
                         }
                       },
                     ),

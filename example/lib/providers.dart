@@ -4,3 +4,5 @@ import 'package:whisper_flutter_plus/whisper_flutter_plus.dart';
 final modelProvider = StateProvider.autoDispose((ref) => WhisperModel.base);
 
 final langProvider = StateProvider.autoDispose((ref) => 'id');
+
+final translateProvider = StateProvider((ref) => false);
